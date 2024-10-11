@@ -39,6 +39,7 @@ gravatar = Gravatar(app,
                     use_ssl=False,
                     base_url=None)
 
+
 # CREATE DATABASE
 class Base(DeclarativeBase):
     pass
@@ -130,13 +131,15 @@ def register():
             method='pbkdf2:sha256',
             salt_length=8
         )
-        new_user = User(
-            email=form.email.data,
-            name=form.name.data,
-            password=hash_and_salted_password,
-        )
+        new_user = User()
+
+        new_user.email = form.email.data
+        new_user.name = form.name.data
+        new_user.password = hash_and_salted_password
+
         db.session.add(new_user)
         db.session.commit()
+
         # This line will authenticate the user with Flask-Login
         login_user(new_user)
         return redirect(url_for("get_all_posts"))
